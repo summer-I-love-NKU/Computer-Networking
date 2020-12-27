@@ -1,0 +1,39 @@
+connect!!!
+接收到文件名: helloworld.txt
+successfully recv 1
+successfully recv 2
+successfully recv 3
+successfully recv 4
+successfully recv 5
+successfully recv 6
+successfully recv 7
+successfully recv 8
+successfully recv 9
+successfully recv 10
+successfully recv 11
+successfully recv 12
+successfully recv 13
+successfully recv 14
+successfully recv 15
+successfully recv 16
+successfully recv 17
+successfully recv 18
+successfully recv 19
+successfully recv 20
+successfully recv 21
+successfully recv 22
+successfully recv 23
+successfully recv 24
+successfully recv 25
+successfully recv 26
+文件 helloworld.txt 传输完成！！！
+
+窗口大小20
+传输用时:1.312秒
+传输数据量：1655808 bytes ( 1617KB )
+吞吐率：1.26205e+06 bytes/s ( 1232.47KB/s )
+
+**************完成一次测试！！！**************
+
+
+

@@ -1,0 +1,59 @@
+// //建立连接请求，发送start代表要进行文件传输，接收到OK开始
+    // strcpy(sendbuf,"start!");
+    // mycheck(sendto(socket_client, sendbuf, BUF_LEN, 0, (SOCKADDR*)&server_addr, sizeof(SOCKADDR)));
+    // // mycheck(send_Ret);
+    
+    // while(1)
+    // {
+    //     recvfrom(socket_client, recvbuf, BUF_LEN, 0, (SOCKADDR*)&server_addr, &recv_para_len);//(int*)sizeof(SOCKADDR));
+    //     if(strcmp(recvbuf,"OK!")==0)
+    //     {
+    //         cout<<"连接建立，开始传输测试！！！\n";
+    //         break;
+    //     }
+    // }
+
+
+    /*
+int make_package(string input_fname)
+{
+    string _root="D:\\vscode_MSVC\\hw3\\test_file\\";
+    ifstream infile;
+	infile.open(_root+input_fname, ios::binary);//必须绝对路径才读成功！！？？
+    //必须检查！！！
+	if (!infile)
+        cout<<"failed to open this file"<<endl;
+    else
+        cout<<"success to open this file"<<endl;
+    infile.seekg(0,ifstream::end);
+	int file_len = infile.tellg();//cout<<infile.tellg()<<endl;
+    cout<<"the size of this file is "<<file_len<<" bytes."<<endl;
+	
+    int pack_len=file_len/DATA_LEN+bool(file_len%DATA_LEN);
+    package=new char*[pack_len];//!!!
+    for (int i = 0; i < pack_len; i++)
+    {
+        package[i]=new char[BUF_LEN];
+    }
+    
+	infile.seekg(0, ios::beg);//cout<<infile.tellg()<<endl;
+	for(int i=0;i<file_len/DATA_LEN;i++)
+    {
+        infile.read(readbuf, DATA_LEN);
+        memcpy(&package[i][HEADER_LEN],&readbuf,DATA_LEN);
+        cout<<package[i]<<endl;
+    };
+    //处理最后一部分,如果有的话
+    memset(readbuf,0,sizeof(readbuf));// strcpy(readbuf,"");不行只是清空第一位
+    if(file_len%DATA_LEN)
+    {
+        infile.read(readbuf, file_len%DATA_LEN);
+        memcpy(&package[pack_len-1][HEADER_LEN],&readbuf,file_len%DATA_LEN);
+        cout<<package[pack_len-1]<<endl;
+    }
+    cout<<"读取完毕！"<<endl; 
+	infile.close();
+    return pack_len;
+}
+*/
+

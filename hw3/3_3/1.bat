@@ -1,0 +1,1 @@
+test_server >> output_server & exit

@@ -1,0 +1,89 @@
+不能直接赋值！！！
+
+unsigned short 还需要理解
+
+
+------------------------------校验和出错！！！
+	// unsigned short* array;//将char数组复制到array中
+	// int array_len=(length + HEADER_LEN)/2+bool((length + HEADER_LEN)%2);
+    // array = new unsigned short[array_len];
+
+	// if ((length + HEADER_LEN) % 2 == 0)
+	// {
+	// 	for (int i = 0; i < array_len; i++)
+	// 	{
+	// 		memcpy(&array[i], &sendbuf[i * 2], 2);
+	// 	}
+	// }
+	// else
+	// {
+	// 	for (int i = 0; i < array_len-1; i++)
+	// 	{
+	// 		memcpy(&array[i], &sendbuf[i * 2], 2);
+	// 	}
+	// 	array[array_len-1] = (unsigned short)sendbuf[length + HEADER_LEN-1];
+	// }
+
+	// //校验和的计算，填充在CheckSum域端中
+    // unsigned int sum = 0;
+	// for(int i=0;i<array_len;i++)
+	// {
+	// 	sum += array[i];
+	// 	sum = (sum >> 16) + (sum & 0xFFFF);
+	// }
+
+
+		//先将char型发送缓冲区转换成为16位的unsigned short型数据
+    //sizeof： char：1   unsigned short：2  两倍关系
+    /**
+     * 0 1 2 3 4 5 6 7 8 9   sendbuf
+     * 0   1   2   3   4     array   16位
+     * */
+
+    //注意最后一片长度可能不为DATA_LEN
+    // int length;-----------------------不能这样吧！！！
+    // memcpy(&length, &recvbuf[Length_bit], 2);-------------
+
+	// int _length;
+    // memcpy(&_length, &recvbuf[Length_bit], 2);//改成1？？
+	// // cout<<"校验和，长度1111！！！"<<_length<<recvbuf[8]<<recvbuf[9]<<endl;
+	// // int length=(_length[0]<<8)|_length[1];
+	// int length=4086;
+	// // cout<<"校验和，长度2222！！！"<<length<<endl;
+
+	// unsigned short* array;//将char数组复制到array中
+	// int array_len=(length + HEADER_LEN)/2+bool((length + HEADER_LEN)%2);
+    // array = new unsigned short[array_len];
+
+	// if ((length + HEADER_LEN) % 2 == 0)
+	// {
+	// 	for (int i = 0; i < array_len; i++)
+	// 	{
+	// 		memcpy(&array[i], &sendbuf[i * 2], 2);
+	// 	}
+	// }
+	// else
+	// {
+	// 	for (int i = 0; i < array_len-1; i++)
+	// 	{
+	// 		memcpy(&array[i], &sendbuf[i * 2], 2);
+	// 	}
+	// 	array[array_len-1] = (unsigned short)sendbuf[length + HEADER_LEN-1];
+	// }
+
+	// //校验和的计算
+    // unsigned int sum = 0;
+	// for(int i=0;i<array_len;i++)
+	// {
+	// 	sum += array[i];
+	// 	sum = (sum >> 16) + (sum & 0xFFFF);
+	// }
+	// cout<<"校验和："<<sum<<endl;
+    // if (sum == 0xFFFF)
+	// {
+	// 	return true;
+	// }
+	// else
+	// {
+	// 	return false;
+	// }

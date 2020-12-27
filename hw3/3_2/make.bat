@@ -1,0 +1,1 @@
+python s.py 20 4

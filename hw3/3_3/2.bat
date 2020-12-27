@@ -1,0 +1,1 @@
+test_client  < input_client >> output_client & exit

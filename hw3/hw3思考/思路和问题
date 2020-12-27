@@ -1,0 +1,169 @@
+-----------------------设计思路-------------------
+UDP认识：
+UDP是传输层中面向无连接的协议，所以UDP丢包后是不会重传的，在编程上服务端和客户端是没有区别的，有的只是“虚拟上”的服务端和客户端
+以UDP为平台进行可靠数据传输协议的设计
+
+建立连接，
+差错检测，
+确认重传，——0 1 两个序列号
+
+---停等协议
+
+进行打包，
+
+
+
+
+GBN——固定大小的滑动窗口，累积确认
+
+UDP服务recvfrom函数设置非阻塞_曾立文的博客-CSDN博客
+https://blog.csdn.net/leon_zeng0/article/details/89948774
+
+
+---------------------------------------------------------
+设置非阻塞！！！使用这个定义的函数，立即返回
+    //设置非阻塞
+    static void setnonblocking(int sockfd) {
+        unsigned long on = 1;
+        if (0 != ioctlsocket(sockfd, FIONBIO, &on))
+        {
+            /* Handle failure. */
+        }
+    }
+    // setnonblocking(socket_client);
+
+设置阻塞，等待超时时间即可
+    int nNetTimeout=1000;//1秒,
+    // 设置发送超时
+    setsockopt(socket_client,SOL_SOCKET,SO_SNDTIMEO, (char *)&nNetTimeout,sizeof(int));
+    //设置接收超时
+    setsockopt(socket_client,SOL_SOCKET,SO_RCVTIMEO, (char *)&nNetTimeout,sizeof(int));
+
+阻塞结果：
+    recv_Ret==-1
+    WSAGetLastError() == 10060
+
+不能超过65535,取的是65310
+------------------------------------------------------
+
+
+/header.SEQ =(1+header.SEQ)%2;//不要用~！否则是-1！！//其实用不到
+
+
+
+目前问题，如果接收的acknum错误怎么办！？
+能够处理发送失败，但不能处理ack接收失败，这涉及接收端的ack处理
+
+
+memcpy(&fileID,&recvbuf[Length_bit],2);!!!!!!!!!!!!!!文件打开错误闪退！！？？
+
+
+check_SEQ_NEW函数！！！！
+
+if(CheckSEQ_IS_NEW())    太马虎了  if(CheckSEQ_IS_NEW)!!!!!!!!!!!!这会怎么样！！！！！！！！！！！！！！！！！！！！！
+
+
+------------------------问题--------------------
+基础知识：
+    TCP与UDP的区别，概念上和使用上——套接字类型（流式or数据报式，协议类型等等），函数使用，send，sendto，recv，recvfrom！！！
+
+不同平台的库：
+    linux：
+    #include <sys/types.h>
+    #include <sys/socket.h>
+    windows：
+    #include<WinSock2.h>
+
+函数
+    //inet_ntoa  将一个十进制网络字节序转换为点分十进制IP格式的字符串。
+    //inet_addr  将一个点分十进制的IP转换成一个长整数型数,将字符串形式的IP地址转换为按网络字节顺序的整型值
+        //#define _WINSOCK_DEPRECATED_NO_WARNINGS
+        //#include <WS2tcpip.h>//使用inet_pton()  inet_ntop()
+        //Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+        //int _tmain(int argc, _TCHAR* argv[])//_tmain,要加＃include <tchar.h>才能用
+
+        https://blog.csdn.net/xvd217/article/details/38902081
+    
+    int send( SOCKET s,    const char FAR *buf,    int len,    int flags );
+    该函数的第一个参数指定发送端套接字描述符；
+    第二个参数指明一个存放应用程序要发送数据的缓冲区；
+    第三个参数指明实际要发送的数据的字节数；
+    第四个参数一般置0。
+
+    int sendto（int sockfd， const void *msg，int len unsigned int flags， const struct sockaddr *to， int tolen）；
+    该函数比send（）函数多了两个参数，to表示目地机的IP地址和端口号信息，而tolen常常被赋值为sizeof （struct sockaddr）
+
+    int recv( SOCKET s,   char FAR *buf,    int len,   int flags   );
+    不论是客户还是服务器应用程序都用recv函数从TCP连接的另一端接收数据。
+    该函数的第一个参数指定接收端套接字描述符；
+    第二个参数指明一个缓冲区，该缓冲区用来存放recv函数接收到的数据；
+    第三个参数指明buf的长度；
+    第四个参数一般置0。
+
+    int recvfrom（int sockfd，void *buf，int len，unsigned int lags，struct sockaddr *from，int *fromlen）；
+    　　from是一个struct sockaddr类型的变量，该变量保存源机的IP地址及端口号。fromlen常置为sizeof （struct sockaddr）。
+
+sendto返回值
+    //成功执行时，返回接收到的字节数。
+    //另一端已关闭则返回0。
+    //失败返回 -1
+
+send recv  各个参数  尤其是buf和len 
+https://www.cnblogs.com/jianqiang2010/archive/2010/08/20/1804598.html
+
+https://blog.csdn.net/hebbely/article/details/79577880
+C++中string、char *、char[]、const char*的转换
+
+
+WSAGetLastError
+10060 —WSAETIMEDOUT
+
+连接超时。若发出了一个连接请求，但经过规定的时间，远程计算机仍未作出正确的响应（或根本没有任何响应），便会发生这样的错误。要想收到这样的错误，通常需要先在套接字上设置好SO _ S N D T I M E O 和S O _ R C V T I M E O 选项，然后调用c o n n e c t 及WS A C o n n e c t 函数。
+要想了解在套接字上设置S O _ S N D T I M E O 和S O _ R C VT I M E O 选项的详情，可参考第9 章。
+
+
+
+------------------------------------------------------------
+//     char src[] = "***";
+//   char dest[] = "abcdefg";
+//   printf("使用 memcpy 前: %s\n", dest);
+
+
+//   memcpy(&dest[0], &src, strlen(src));
+//   printf("使用 memcpy 后: %s\n", dest);
+
+//   memcpy(&dest[4], &src, strlen(src));
+//   printf("使用 memcpy 后: %s\n", dest);
+
+
+
+
+cout<<~0x0;cout<<"!!!"<<endl;//是-1！！！
+      char SendBuf[20];char c[10]="12345";
+      header.SEQ = 48;//0
+		header.ACKnum = 49;//1
+		header.CheckSum = 0x30;//0
+      header.ID = 0x31;//1 注意是先给高位赋值！！！！！
+      header.Length = 0b0011000100110001;//11
+		memcpy(&SendBuf, &header, 10);memcpy(&SendBuf[10], &c, 3);
+      for (int i = 0; i < 20; i++)
+      {
+         cout<<SendBuf[i];
+         /**输出：：：
+          * 0a1a0a1a11123aaa... (a为乱码)*/
+      }
+
+
+
+
+
+
+C++中如何将4字节数据转换成int类型
+
+可以采用位运算操bai作du实现。具体的就是左zhi移运算加上或运算dao。
+原理为，左移运算zhuan低位补0，而或运shu算与0或时，结果值就是原值。
+原始4字节数据，如果为
+char a[4] = {0x11,0x22,0x33,0x44};
+则转为整型数据值为
+(a[0]<<24)|(a[1]<<24)|(a[2]<<24)|a[3]
+结果值为0x11223344。
